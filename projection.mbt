@@ -1,18 +1,29 @@
 ///|
-fn Schema::project_fds(self : Schema, attrs : Array[Int], budget : Meter) -> Array[FD] raise DesignError {
+fn Schema::project_fds(
+  self : Schema,
+  attrs : Array[Int32],
+  budget : Meter,
+) -> Array[FD] raise DesignError {
   let fds : Array[FD] = []
   for seed in subsets(attrs, budget) {
-    let determined = difference(intersection(self.close(seed, budget), attrs), seed)
+    let determined = difference(
+      intersection(self.close(seed, budget), attrs),
+      seed,
+    )
     if !determined.is_empty() {
       budget.result(fds.length() + 1)
-      fds.push({ left: seed, right: determined })
+      fds.push({ left: seed, right: determined, })
     }
   }
   fds
 }
 
 ///|
-pub fn Schema::project_dependencies(self : Schema, relation : Array[Int], limits? : Limits = default_limits()) -> Array[FD] raise DesignError {
+pub fn Schema::project_dependencies(
+  self : Schema,
+  relation : Array[Int32],
+  limits~ : Limits = default_limits(),
+) -> Array[FD] raise DesignError {
   let attrs = indices(relation, self.attribute_count())
   self.project_fds(attrs, meter(limits))
 }
@@ -21,24 +32,36 @@ pub fn Schema::project_dependencies(self : Schema, relation : Array[Int], limits
 fn Schema::with_fds(self : Schema, fds : Array[FD]) -> Schema raise DesignError {
   let rules : Array[@fca.Implication] = []
   for fd in fds {
-    let rule = try { @fca.implication(fd.left, fd.right, self.attribute_count()) } catch { _ => raise Invalid("invalid projected dependency") }
+    let rule = @fca.implication(fd.left, fd.right, self.attribute_count()) catch {
+      _ => raise Invalid("invalid projected dependency")
+    }
     rules.push(rule)
   }
-  let theory = try { @fca.rule_system(self.attribute_count(), rules) } catch {
+  let theory = @fca.rule_system(self.attribute_count(), rules) catch {
     _ => raise Budget("projected FD system exceeds upstream rule allowance")
   }
-  { labels: self.labels.copy(), theory }
+  { labels: self.labels.copy(), theory, }
 }
 
 ///|
-fn Schema::fragments(self : Schema, input : Array[Array[Int]], require_cover : Bool) -> Array[Array[Int]] raise DesignError {
-  if input.is_empty() || input.length() > 64 { raise Invalid("decomposition requires 1..64 fragments") }
-  let out : Array[Array[Int]] = []
+fn Schema::fragments(
+  self : Schema,
+  input : Array[Array[Int32]],
+  require_cover : Bool,
+) -> Array[Array[Int32]] raise DesignError {
+  if input.is_empty() || input.length() > 64 {
+    raise Invalid("decomposition requires 1..64 fragments")
+  }
+  let out : Array[Array[Int32]] = []
   let mut covered = []
   for fragment in input {
     let attrs = indices(fragment, self.attribute_count())
-    if attrs.is_empty() { raise Invalid("fragment must not be empty") }
-    if out.any((x) => { x == attrs }) { raise Invalid("duplicate fragment") }
+    if attrs.is_empty() {
+      raise Invalid("fragment must not be empty")
+    }
+    if out.any(x => x == attrs) {
+      raise Invalid("duplicate fragment")
+    }
     covered = union(covered, attrs)
     out.push(attrs)
   }
@@ -52,11 +75,15 @@ fn Schema::fragments(self : Schema, input : Array[Array[Int]], require_cover : B
 pub(all) struct Preservation {
   preserved : Bool
   missing : Array[FD]
-  projected_dependency_count : Int
+  projected_dependency_count : Int32
 } derive(Eq, Debug)
 
 ///|
-fn Schema::preservation_of(self : Schema, relations : Array[Array[Int]], budget : Meter) -> Preservation raise DesignError {
+fn Schema::preservation_of(
+  self : Schema,
+  relations : Array[Array[Int32]],
+  budget : Meter,
+) -> Preservation raise DesignError {
   let fds : Array[FD] = []
   for attrs in relations {
     for fd in self.project_fds(attrs, budget) {
@@ -69,18 +96,33 @@ fn Schema::preservation_of(self : Schema, relations : Array[Array[Int]], budget 
   let projected = self.with_fds(fds)
   let missing = []
   for fd in self.dependencies() {
-    if !subset(fd.right, projected.close(fd.left, budget)) { missing.push(fd) }
+    if !subset(fd.right, projected.close(fd.left, budget)) {
+      missing.push(fd)
+    }
   }
-  { preserved: missing.is_empty(), missing, projected_dependency_count: fds.length() }
+  {
+    preserved: missing.is_empty(),
+    missing,
+    projected_dependency_count: fds.length(),
+  }
 }
 
 ///|
-pub fn Schema::dependency_preservation(self : Schema, relations : Array[Array[Int]], limits? : Limits = default_limits()) -> Preservation raise DesignError {
+pub fn Schema::dependency_preservation(
+  self : Schema,
+  relations : Array[Array[Int32]],
+  limits~ : Limits = default_limits(),
+) -> Preservation raise DesignError {
   self.preservation_of(self.fragments(relations, true), meter(limits))
 }
 
 ///|
-pub fn Schema::binary_lossless(self : Schema, first : Array[Int], second : Array[Int], limits? : Limits = default_limits()) -> Bool raise DesignError {
+pub fn Schema::binary_lossless(
+  self : Schema,
+  first : Array[Int32],
+  second : Array[Int32],
+  limits~ : Limits = default_limits(),
+) -> Bool raise DesignError {
   let relations = self.fragments([first, second], true)
   let common = intersection(relations[0], relations[1])
   let closed = self.close(common, meter(limits))
