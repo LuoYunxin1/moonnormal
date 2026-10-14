@@ -38,7 +38,7 @@ fn Schema::fragments(self : Schema, input : Array[Array[Int]], require_cover : B
   for fragment in input {
     let attrs = indices(fragment, self.attribute_count())
     if attrs.is_empty() { raise Invalid("fragment must not be empty") }
-    if out.any(fn(x) { x == attrs }) { raise Invalid("duplicate fragment") }
+    if out.any((x) => { x == attrs }) { raise Invalid("duplicate fragment") }
     covered = union(covered, attrs)
     out.push(attrs)
   }

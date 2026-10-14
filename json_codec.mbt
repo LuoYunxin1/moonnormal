@@ -72,6 +72,20 @@ fn attribute_array(value : Json, n : Int) -> Array[Int] raise DesignError {
 }
 
 ///|
+fn ordered_attributes(value : Json, n : Int) -> Array[Int] raise DesignError {
+  let attrs = attribute_array(value, n)
+  let original = array_of(value, 16)
+  if original.length() != attrs.length() { raise Invalid("duplicate table columns") }
+  for i in 0..<attrs.length() {
+    match original[i] {
+      Number(x, ..) => if x != attrs[i].to_double() { raise Invalid("table columns must be ordered") }
+      _ => raise Invalid("table column must be numeric")
+    }
+  }
+  attrs
+}
+
+///|
 fn attrs_json(attrs : Array[Int]) -> Json {
   Json::array(attrs.map((i) => { Json::number(i.to_double()) }))
 }
@@ -118,7 +132,7 @@ pub fn parse_table_json(owner : Schema, text : String, limits? : Limits = defaul
   if string_of(required(fields, "format")) != "moonnormal-table/v1" { raise Invalid("unsupported table format") }
   let labels = array_of(required(fields, "attributes"), 16).map((v) => { string_of(v) })
   if labels != owner.attributes() { raise Invalid("JSON table schema mismatch") }
-  let columns = attribute_array(required(fields, "columns"), labels.length())
+  let columns = ordered_attributes(required(fields, "columns"), labels.length())
   let rows = array_of(required(fields, "rows"), limits.max_rows).map((row) => {
     array_of(row, 16).map((cell) => { string_of(cell) })
   })

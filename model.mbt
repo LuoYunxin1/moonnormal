@@ -72,7 +72,7 @@ fn indices(xs : Array[Int], n : Int) -> Array[Int] raise DesignError {
 
 ///|
 fn full(n : Int) -> Array[Int] {
-  Array::makei(n, fn(i) { i })
+  Array::makei(n, (i) => i)
 }
 
 ///|
@@ -136,7 +136,7 @@ pub fn Schema::attributes(self : Schema) -> Array[String] { self.labels.copy() }
 
 ///|
 pub fn Schema::dependencies(self : Schema) -> Array[FD] {
-  self.theory.implications().map(fn(r) { { left: r.premise.copy(), right: r.conclusion.copy() } })
+  self.theory.implications().map((r) => { { left: r.premise.copy(), right: r.conclusion.copy() } })
 }
 
 ///|
@@ -159,7 +159,7 @@ pub fn Schema::resolve(self : Schema, names : Array[String]) -> Array[Int] raise
 
 ///|
 pub fn Schema::names(self : Schema, attrs : Array[Int]) -> Array[String] raise DesignError {
-  indices(attrs, self.attribute_count()).map(fn(i) { self.labels[i] })
+  indices(attrs, self.attribute_count()).map((i) => { self.labels[i] })
 }
 
 ///|
@@ -197,3 +197,17 @@ pub extend Limits with Eq::{equal, not_equal}
 
 ///|
 pub extend Limits with Debug::{to_repr}
+
+///|
+fn Meter::charge_product(self : Meter, factors : Array[Int]) -> Unit raise DesignError {
+  let mut product = 1
+  for factor in factors {
+    if factor < 0 { raise Invalid("negative work factor") }
+    if factor == 0 { return }
+  }
+  for factor in factors {
+    if product > self.remaining / factor { raise Budget("work product exceeds allowance") }
+    product *= factor
+  }
+  self.charge(product)
+}

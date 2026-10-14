@@ -133,7 +133,8 @@ pub fn Table::natural_join(self : Table, other : Table, limits? : Limits = defau
 pub fn Table::set_equal(self : Table, other : Table, limits? : Limits = default_limits()) -> Bool raise DesignError {
   if self.labels != other.labels || self.columns != other.columns { return false }
   let budget = meter(limits)
-  budget.charge(1 + self.data.length() * other.data.length() * (self.columns.length() + 1))
+  budget.charge(1)
+  budget.charge_product([self.data.length(), other.data.length(), self.columns.length() + 1])
   self.data.length() == other.data.length() && self.data.all((row) => { other.data.contains(row) })
 }
 
@@ -155,7 +156,8 @@ pub fn Table::reconstruct(self : Table, owner : Schema, relations : Array[Array[
   let budget = meter(limits)
   let mut joined = self.project_with(parts[0], budget)
   for i in 1..<parts.length() { joined = joined.join_with(self.project_with(parts[i], budget), budget) }
-  budget.charge(1 + self.data.length() * joined.data.length() * (self.columns.length() + 1))
+  budget.charge(1)
+  budget.charge_product([self.data.length(), joined.data.length(), self.columns.length() + 1])
   let spurious = joined.data.filter((row) => { !self.data.contains(row) }).map((row) => { row.copy() })
   let missing = self.data.filter((row) => { !joined.data.contains(row) }).map((row) => { row.copy() })
   { exact: spurious.is_empty() && missing.is_empty(), original_rows: self.row_count(),

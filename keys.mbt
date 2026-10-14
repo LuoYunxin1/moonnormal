@@ -10,7 +10,7 @@ fn mask_set(mask : Int, attrs : Array[Int]) -> Array[Int] {
 ///|
 fn subsets(attrs : Array[Int], budget : Meter) -> Array[Array[Int]] raise DesignError {
   let count = 1 << attrs.length()
-  budget.charge(count)
+  budget.charge_product([count, attrs.length() + 1, attrs.length() + 1])
   let out = []
   // Cardinality order makes minimal-key filtering deterministic.
   for size in 0..=attrs.length() {
@@ -27,7 +27,7 @@ fn Schema::keys_of(self : Schema, attrs : Array[Int], budget : Meter) -> Array[A
   let keys : Array[Array[Int]] = []
   for seed in subsets(attrs, budget) {
     budget.charge(keys.length() + 1)
-    if keys.any(fn(k) { subset(k, seed) }) { continue }
+    if keys.any((k) => { subset(k, seed) }) { continue }
     if subset(attrs, self.close(seed, budget)) {
       budget.result(keys.length() + 1)
       keys.push(seed)

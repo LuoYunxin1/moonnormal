@@ -33,7 +33,7 @@ fn root(parent : Array[Int], x : Int) -> Int {
 
 ///|
 fn tableau_view(table : Array[Array[Int]], parent : Array[Int]) -> Array[Array[Int]] {
-  table.map(fn(row) { row.map(fn(x) { root(parent, x) }) })
+  table.map((row) => { row.map((x) => { root(parent, x) }) })
 }
 
 ///|
@@ -41,8 +41,8 @@ fn Schema::chase_of(self : Schema, relations : Array[Array[Int]], budget : Meter
   let n = self.attribute_count()
   let rows = relations.length()
   if rows * n > budget.limits.max_cells { raise Budget("chase tableau cell allowance") }
-  let initial = Array::makei(rows, fn(i) {
-    Array::makei(n, fn(j) { if relations[i].contains(j) { j } else { n + i * n + j } })
+  let initial = Array::makei(rows, (i) => {
+    Array::makei(n, (j) => { if relations[i].contains(j) { j } else { n + i * n + j } })
   })
   let parent = full(n + rows * n)
   let merges : Array[ChaseMerge] = []
@@ -58,7 +58,7 @@ fn Schema::chase_of(self : Schema, relations : Array[Array[Int]], budget : Meter
       for i in 0..<rows {
         for j in (i + 1)..<rows {
           budget.charge(1 + fd.left.length() + fd.right.length())
-          let agrees = fd.left.all(fn(a) { root(parent, initial[i][a]) == root(parent, initial[j][a]) })
+          let agrees = fd.left.all((a) => { root(parent, initial[i][a]) == root(parent, initial[j][a]) })
           if !agrees { continue }
           for column in fd.right {
             let a = root(parent, initial[i][column])
@@ -99,14 +99,14 @@ pub fn Schema::validate_chase_witness(self : Schema, result : ChaseResult, limit
     for i in 0..<rows.length() {
       for j in (i + 1)..<rows.length() {
         budget.charge(1 + fd.left.length() + fd.right.length())
-        if fd.left.all(fn(a) { rows[i][a] == rows[j][a] }) &&
-           !fd.right.all(fn(a) { rows[i][a] == rows[j][a] }) { return false }
+        if fd.left.all((a) => { rows[i][a] == rows[j][a] }) &&
+           !fd.right.all((a) => { rows[i][a] == rows[j][a] }) { return false }
       }
     }
   }
   match result.witness_row {
     Some(i) => i >= 0 && i < rows.length() && rows[i] == full(n) && result.lossless
-    None => !result.lossless && !rows.any(fn(row) { row == full(n) })
+    None => !result.lossless && !rows.any((row) => { row == full(n) })
   }
 }
 

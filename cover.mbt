@@ -2,11 +2,12 @@
 fn Schema::minimal(self : Schema, budget : Meter) -> Array[FD] raise DesignError {
   // These operations reuse MoonConcept's generic implication reduction.
   let count = self.dependencies().length()
-  budget.charge(1 + (count + 1) * (count + 1) * self.attribute_count() * self.attribute_count())
+  budget.charge(1)
+  budget.charge_product([count + 1, count + 1, self.attribute_count(), self.attribute_count()])
   let reduced = try {
     self.theory.split_conclusions().reduce_premises().irredundant()
   } catch { _ => raise Invalid("upstream cover reduction failed") }
-  reduced.implications().filter(fn(r) { !subset(r.conclusion, r.premise) }).map(fn(r) {
+  reduced.implications().filter((r) => { !subset(r.conclusion, r.premise) }).map((r) => {
     { left: r.premise, right: r.conclusion }
   })
 }

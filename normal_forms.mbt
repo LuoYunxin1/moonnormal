@@ -19,7 +19,7 @@ fn Schema::violations_of(self : Schema, attrs : Array[Int], form : NormalForm, b
     if subset(attrs, closed) { continue }
     let mut bad = difference(closed, seed)
     if form != BoyceCodd { bad = difference(bad, prime) }
-    if form == Second && !keys.any(fn(k) { seed.length() < k.length() && subset(seed, k) }) { continue }
+    if form == Second && !keys.any((k) => { seed.length() < k.length() && subset(seed, k) }) { continue }
     if !bad.is_empty() {
       budget.result(out.length() + 1)
       out.push({ relation: attrs.copy(), dependency: { left: seed, right: bad }, form })
