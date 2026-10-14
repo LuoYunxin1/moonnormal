@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 target="${1:-wasm-gc}"
+# A clean runner has no registry index, even after compiler/core installation.
+moon update
 moon info
 moon fmt --check
 git diff --exit-code -- '*.mbti'
