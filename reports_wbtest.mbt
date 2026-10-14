@@ -9,3 +9,22 @@ test "reports expose caveats rather than pretending to enforce FDs" {
     s.review_migration(p, p).summary(s).contains("does not authorize"),
   )
 }
+
+///|
+test "reporting mutable review records validates indices" {
+  let s = schema(["A", "B"], [])
+  let p : Plan = {
+    target: Third,
+    relations: [[0, 1]],
+    splits: [],
+    added_key_relation: false,
+  }
+  let review = s.review_migration(p, p)
+  review.layout.added.push([99])
+  try review.summary(s) catch {
+    Invalid(_) => ()
+    _ => fail("wrong failure")
+  } noraise {
+    _ => fail("invalid report accepted")
+  }
+}

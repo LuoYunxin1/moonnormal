@@ -1,10 +1,13 @@
 ///|
-fn attribute_text(owner : Schema, attrs : Array[Int32]) -> String {
-  "{" + attrs.map(a => owner.labels[a]).join(", ") + "}"
+fn attribute_text(
+  owner : Schema,
+  attrs : Array[Int32],
+) -> String raise DesignError {
+  "{" + owner.names(attrs).join(", ") + "}"
 }
 
 ///|
-fn dependency_text(owner : Schema, fd : FD) -> String {
+fn dependency_text(owner : Schema, fd : FD) -> String raise DesignError {
   attribute_text(owner, fd.left) + " -> " + attribute_text(owner, fd.right)
 }
 
