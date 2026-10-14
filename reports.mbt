@@ -134,7 +134,7 @@ pub fn Table::audit_report(
 pub fn MigrationReview::summary(
   self : MigrationReview,
   owner : Schema,
-) -> String {
+) -> String raise DesignError {
   let out = StringBuilder()
   out.write_string(
     "Lossless regression: " + self.lossless_regression.to_string() + "\n",

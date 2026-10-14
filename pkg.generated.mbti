@@ -151,7 +151,7 @@ pub(all) struct MigrationReview {
 } derive(Eq, @debug.Debug)
 pub fn MigrationReview::equal(Self, Self) -> Bool
 pub fn MigrationReview::not_equal(Self, Self) -> Bool
-pub fn MigrationReview::summary(Self, Schema) -> String
+pub fn MigrationReview::summary(Self, Schema) -> String raise DesignError
 pub fn MigrationReview::to_repr(Self) -> @debug.Repr
 
 pub(all) enum NormalForm {
