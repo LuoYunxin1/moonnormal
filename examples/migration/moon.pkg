@@ -1,0 +1,5 @@
+import {
+  "LuoYunxin1/moonnormal" @normal,
+}
+
+pkgtype(kind: "executable")
