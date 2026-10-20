@@ -13,7 +13,7 @@ MoonNormal 将给定函数依赖转成可检查的候选键、2NF/3NF/BCNF 诊�
 `moonc v0.10.15+943464bfa` / `moon 0.1.20261012 (748b63c)`。
 
 ```sh
-moon add LuoYunxin1/moonnormal@0.1.0
+moon add LuoYunxin1/moonnormal@0.1.1
 ```
 
 下游 `moon.pkg`：
@@ -98,6 +98,8 @@ python scripts/measure.py
 ```
 
 CI 在 `wasm-gc / wasm / js / native` 上运行严格检查、全部测试、构建与三个示例。
+CI 的 native 使用 Ubuntu/GCC；Windows 本地 native 需要 MSVC C++ 工具与 Windows SDK。
+CI 安装器固定官方 `0.10.15+943464bfa` 版本地址，不依赖会变化的 latest 别名。
 测试包含 4,096 个三属性 singleton-conclusion FD 理论：32,768 个独立闭包/键/cover
 比较、8,192 个分解计划、49,152 个二元连接判据与 chase 比较。
 此穷举不等于大模式的形式化证明，也没有宣称性能优于其他实现。

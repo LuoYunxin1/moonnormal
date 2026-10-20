@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.1 — 2026-10-20
+
+- Enforce cell budgets on distinct projection results, including reconstruction,
+  and charge projection work before materializing intermediate rows.
+- Preserve the Budget error category when MoonConcept cover reduction exhausts
+  its rule allowance, including grouped-cover and 3NF-synthesis callers.
+- Add public-API budget, malformed-input and defensive-copy regression tests.
+
+- Pin CI installer downloads to the exact official compiler/core version URLs,
+  retaining the original snapshot ETags instead of depending on moving latest aliases.
+
 ## 0.1.0 — 2026-10-14
 
 - Validated declared-FD schemas, closure adapter, minimal covers and key profiles.

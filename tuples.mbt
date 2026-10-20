@@ -15,8 +15,9 @@ fn unique_rows(
   for row in rows {
     budget.charge(1 + out.length() * (width + 1))
     if !out.contains(row) {
-      if out.length() + 1 > budget.limits.max_rows {
-        raise Budget("tuple row allowance")
+      if out.length() + 1 > budget.limits.max_rows ||
+        (out.length() + 1) * width > budget.limits.max_cells {
+        raise Budget("tuple result shape allowance")
       }
       out.push(row.copy())
     }
@@ -122,8 +123,8 @@ fn Table::project_with(
   budget : Meter,
 ) -> Table raise DesignError {
   let positions = self.positions(attrs)
-  let projected = self.data.map(row => positions.map(i => row[i]))
   budget.charge(self.data.length() * (attrs.length() + 1))
+  let projected = self.data.map(row => positions.map(i => row[i]))
   {
     labels: self.labels.copy(),
     columns: attrs.copy(),

@@ -13,6 +13,7 @@ fn Schema::minimal(
     self.attribute_count(),
   ])
   let reduced = self.theory.split_conclusions().reduce_premises().irredundant() catch {
+      @fca.Budget(_) => raise Budget("upstream cover reduction allowance")
       _ => raise Invalid("upstream cover reduction failed")
     }
   reduced
