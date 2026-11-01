@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 — 2026-11-01
+
+- Pin CI compiler and matching core downloads to official MoonBit 0.10.18
+  (6c83a7f62), meeting the acceptance requirement of moonc >= 0.10.16.
+- Document the compiler minimum, verified toolchain and exact package installation.
+
 ## 0.1.1 — 2026-10-20
 
 - Enforce cell budgets on distinct projection results, including reconstruction,

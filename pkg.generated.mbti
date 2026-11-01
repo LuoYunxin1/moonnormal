@@ -20,7 +20,7 @@ pub fn parse_table_json(Schema, String, limits? : Limits) -> Table raise DesignE
 
 pub fn schema(Array[String], Array[FD]) -> Schema raise DesignError
 
-pub fn table(Schema, Array[Int], Array[Array[String]], limits? : Limits) -> Table raise DesignError
+pub fn table(Schema, Array[Int32], Array[Array[String]], limits? : Limits) -> Table raise DesignError
 
 // Errors
 pub suberror DesignError {
@@ -31,12 +31,12 @@ pub fn DesignError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
 pub(all) struct ChaseMerge {
-  dependency_index : Int
-  first_row : Int
-  second_row : Int
-  column : Int
-  eliminated : Int
-  representative : Int
+  dependency_index : Int32
+  first_row : Int32
+  second_row : Int32
+  column : Int32
+  eliminated : Int32
+  representative : Int32
 } derive(Eq, @debug.Debug)
 pub fn ChaseMerge::equal(Self, Self) -> Bool
 pub fn ChaseMerge::not_equal(Self, Self) -> Bool
@@ -44,19 +44,19 @@ pub fn ChaseMerge::to_repr(Self) -> @debug.Repr
 
 pub(all) struct ChaseResult {
   lossless : Bool
-  witness_row : Int?
-  initial : Array[Array[Int]]
-  final_tableau : Array[Array[Int]]
+  witness_row : Int32?
+  initial : Array[Array[Int32]]
+  final_tableau : Array[Array[Int32]]
   merges : Array[ChaseMerge]
-  rounds : Int
+  rounds : Int32
 } derive(Eq, @debug.Debug)
 pub fn ChaseResult::equal(Self, Self) -> Bool
 pub fn ChaseResult::not_equal(Self, Self) -> Bool
 pub fn ChaseResult::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Collision {
-  first_row : Int
-  second_row : Int
+  first_row : Int32
+  second_row : Int32
   determinant_values : Array[String]
 } derive(Eq, @debug.Debug)
 pub fn Collision::equal(Self, Self) -> Bool
@@ -64,18 +64,18 @@ pub fn Collision::not_equal(Self, Self) -> Bool
 pub fn Collision::to_repr(Self) -> @debug.Repr
 
 pub(all) struct ColumnProfile {
-  attribute : Int
-  distinct_values : Int
-  empty_values : Int
-  maximum_code_units : Int
+  attribute : Int32
+  distinct_values : Int32
+  empty_values : Int32
+  maximum_code_units : Int32
 } derive(Eq, @debug.Debug)
 pub fn ColumnProfile::equal(Self, Self) -> Bool
 pub fn ColumnProfile::not_equal(Self, Self) -> Bool
 pub fn ColumnProfile::to_repr(Self) -> @debug.Repr
 
 pub(all) struct DataAudit {
-  checked_dependencies : Array[Int]
-  skipped_dependencies : Array[Int]
+  checked_dependencies : Array[Int32]
+  skipped_dependencies : Array[Int32]
   violations : Array[TupleViolation]
 } derive(Eq, @debug.Debug)
 pub fn DataAudit::equal(Self, Self) -> Bool
@@ -84,7 +84,7 @@ pub fn DataAudit::to_repr(Self) -> @debug.Repr
 
 pub(all) struct DependencyLocality {
   dependency : FD
-  containing_relations : Array[Int]
+  containing_relations : Array[Int32]
   jointly_preserved : Bool
 } derive(Eq, @debug.Debug)
 pub fn DependencyLocality::equal(Self, Self) -> Bool
@@ -92,40 +92,40 @@ pub fn DependencyLocality::not_equal(Self, Self) -> Bool
 pub fn DependencyLocality::to_repr(Self) -> @debug.Repr
 
 pub(all) struct FD {
-  left : Array[Int]
-  right : Array[Int]
+  left : Array[Int32]
+  right : Array[Int32]
 } derive(Eq, @debug.Debug)
 pub fn FD::equal(Self, Self) -> Bool
 pub fn FD::not_equal(Self, Self) -> Bool
 pub fn FD::to_repr(Self) -> @debug.Repr
 
 pub(all) struct KeyProfile {
-  keys : Array[Array[Int]]
-  prime : Array[Int]
-  essential : Array[Int]
-  minimum_width : Int
-  maximum_width : Int
+  keys : Array[Array[Int32]]
+  prime : Array[Int32]
+  essential : Array[Int32]
+  minimum_width : Int32
+  maximum_width : Int32
 } derive(Eq, @debug.Debug)
 pub fn KeyProfile::equal(Self, Self) -> Bool
 pub fn KeyProfile::not_equal(Self, Self) -> Bool
 pub fn KeyProfile::to_repr(Self) -> @debug.Repr
 
 pub(all) struct LayoutDelta {
-  unchanged : Array[Array[Int]]
-  removed : Array[Array[Int]]
-  added : Array[Array[Int]]
-  duplicated_attributes_before : Array[Int]
-  duplicated_attributes_after : Array[Int]
+  unchanged : Array[Array[Int32]]
+  removed : Array[Array[Int32]]
+  added : Array[Array[Int32]]
+  duplicated_attributes_before : Array[Int32]
+  duplicated_attributes_after : Array[Int32]
 } derive(Eq, @debug.Debug)
 pub fn LayoutDelta::equal(Self, Self) -> Bool
 pub fn LayoutDelta::not_equal(Self, Self) -> Bool
 pub fn LayoutDelta::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Limits {
-  max_work : Int
-  max_results : Int
-  max_rows : Int
-  max_cells : Int
+  max_work : Int32
+  max_results : Int32
+  max_rows : Int32
+  max_cells : Int32
 } derive(Eq, @debug.Debug)
 pub fn Limits::equal(Self, Self) -> Bool
 pub fn Limits::not_equal(Self, Self) -> Bool
@@ -165,7 +165,7 @@ pub fn NormalForm::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Plan {
   target : NormalForm
-  relations : Array[Array[Int]]
+  relations : Array[Array[Int32]]
   splits : Array[SplitStep]
   added_key_relation : Bool
 } derive(Eq, @debug.Debug)
@@ -189,7 +189,7 @@ pub fn PlanAudit::to_repr(Self) -> @debug.Repr
 pub(all) struct Preservation {
   preserved : Bool
   missing : Array[FD]
-  projected_dependency_count : Int
+  projected_dependency_count : Int32
 } derive(Eq, @debug.Debug)
 pub fn Preservation::equal(Self, Self) -> Bool
 pub fn Preservation::not_equal(Self, Self) -> Bool
@@ -197,8 +197,8 @@ pub fn Preservation::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Reconstruction {
   exact : Bool
-  original_rows : Int
-  reconstructed_rows : Int
+  original_rows : Int32
+  reconstructed_rows : Int32
   spurious : Array[Array[String]]
   missing : Array[Array[String]]
   reconstructed : Table
@@ -206,9 +206,9 @@ pub(all) struct Reconstruction {
 pub fn Reconstruction::to_repr(Self) -> @debug.Repr
 
 pub(all) struct RelationProfile {
-  attributes : Array[Int]
-  keys : Array[Array[Int]]
-  prime : Array[Int]
+  attributes : Array[Int32]
+  keys : Array[Array[Int32]]
+  prime : Array[Int32]
   second : Bool
   third : Bool
   boyce_codd : Bool
@@ -220,37 +220,37 @@ pub fn RelationProfile::to_repr(Self) -> @debug.Repr
 pub struct Schema {
   // private fields
 } derive(@debug.Debug)
-pub fn Schema::attribute(Self, String) -> Int?
-pub fn Schema::attribute_count(Self) -> Int
+pub fn Schema::attribute(Self, String) -> Int32?
+pub fn Schema::attribute_count(Self) -> Int32
 pub fn Schema::attributes(Self) -> Array[String]
 pub fn Schema::audit_plan(Self, Plan, limits? : Limits) -> PlanAudit raise DesignError
-pub fn Schema::binary_lossless(Self, Array[Int], Array[Int], limits? : Limits) -> Bool raise DesignError
-pub fn Schema::candidate_keys(Self, relation? : Array[Int], limits? : Limits) -> Array[Array[Int]] raise DesignError
-pub fn Schema::closure(Self, Array[Int], limits? : Limits) -> Array[Int] raise DesignError
-pub fn Schema::compare_layouts(Self, Array[Array[Int]], Array[Array[Int]]) -> LayoutDelta raise DesignError
+pub fn Schema::binary_lossless(Self, Array[Int32], Array[Int32], limits? : Limits) -> Bool raise DesignError
+pub fn Schema::candidate_keys(Self, relation? : Array[Int32], limits? : Limits) -> Array[Array[Int32]] raise DesignError
+pub fn Schema::closure(Self, Array[Int32], limits? : Limits) -> Array[Int32] raise DesignError
+pub fn Schema::compare_layouts(Self, Array[Array[Int32]], Array[Array[Int32]]) -> LayoutDelta raise DesignError
 pub fn Schema::compare_theory(Self, Self, limits? : Limits) -> TheoryDelta raise DesignError
 pub fn Schema::decompose_bcnf(Self, limits? : Limits) -> Plan raise DesignError
 pub fn Schema::dependencies(Self) -> Array[FD]
-pub fn Schema::dependency_locality(Self, Array[Array[Int]], limits? : Limits) -> Array[DependencyLocality] raise DesignError
-pub fn Schema::dependency_preservation(Self, Array[Array[Int]], limits? : Limits) -> Preservation raise DesignError
+pub fn Schema::dependency_locality(Self, Array[Array[Int32]], limits? : Limits) -> Array[DependencyLocality] raise DesignError
+pub fn Schema::dependency_preservation(Self, Array[Array[Int32]], limits? : Limits) -> Preservation raise DesignError
 pub fn Schema::entails(Self, FD, limits? : Limits) -> Bool raise DesignError
 pub fn Schema::equivalent(Self, Self, limits? : Limits) -> Bool raise DesignError
-pub fn Schema::essential_attributes(Self) -> Array[Int]
+pub fn Schema::essential_attributes(Self) -> Array[Int32]
 pub fn Schema::grouped_cover(Self, limits? : Limits) -> Array[FD] raise DesignError
-pub fn Schema::in_normal_form(Self, Array[Int], NormalForm, limits? : Limits) -> Bool raise DesignError
-pub fn Schema::is_candidate_key(Self, Array[Int], Array[Int], limits? : Limits) -> Bool raise DesignError
-pub fn Schema::is_superkey(Self, Array[Int], Array[Int], limits? : Limits) -> Bool raise DesignError
+pub fn Schema::in_normal_form(Self, Array[Int32], NormalForm, limits? : Limits) -> Bool raise DesignError
+pub fn Schema::is_candidate_key(Self, Array[Int32], Array[Int32], limits? : Limits) -> Bool raise DesignError
+pub fn Schema::is_superkey(Self, Array[Int32], Array[Int32], limits? : Limits) -> Bool raise DesignError
 pub fn Schema::key_profile(Self, limits? : Limits) -> KeyProfile raise DesignError
-pub fn Schema::lossless_chase(Self, Array[Array[Int]], limits? : Limits) -> ChaseResult raise DesignError
-pub fn Schema::lossy_counterexample(Self, Array[Array[Int]], limits? : Limits) -> LossyWitness? raise DesignError
+pub fn Schema::lossless_chase(Self, Array[Array[Int32]], limits? : Limits) -> ChaseResult raise DesignError
+pub fn Schema::lossy_counterexample(Self, Array[Array[Int32]], limits? : Limits) -> LossyWitness? raise DesignError
 pub fn Schema::minimal_cover(Self, limits? : Limits) -> Array[FD] raise DesignError
-pub fn Schema::names(Self, Array[Int]) -> Array[String] raise DesignError
-pub fn Schema::normal_form_violations(Self, Array[Int], NormalForm, limits? : Limits) -> Array[Violation] raise DesignError
+pub fn Schema::names(Self, Array[Int32]) -> Array[String] raise DesignError
+pub fn Schema::normal_form_violations(Self, Array[Int32], NormalForm, limits? : Limits) -> Array[Violation] raise DesignError
 pub fn Schema::plan_report(Self, Plan, limits? : Limits) -> String raise DesignError
-pub fn Schema::prime_attributes(Self, Array[Int], limits? : Limits) -> Array[Int] raise DesignError
-pub fn Schema::project_dependencies(Self, Array[Int], limits? : Limits) -> Array[FD] raise DesignError
-pub fn Schema::relation_profile(Self, Array[Int], limits? : Limits) -> RelationProfile raise DesignError
-pub fn Schema::resolve(Self, Array[String]) -> Array[Int] raise DesignError
+pub fn Schema::prime_attributes(Self, Array[Int32], limits? : Limits) -> Array[Int32] raise DesignError
+pub fn Schema::project_dependencies(Self, Array[Int32], limits? : Limits) -> Array[FD] raise DesignError
+pub fn Schema::relation_profile(Self, Array[Int32], limits? : Limits) -> RelationProfile raise DesignError
+pub fn Schema::resolve(Self, Array[String]) -> Array[Int32] raise DesignError
 pub fn Schema::review_migration(Self, Plan, Plan, limits? : Limits) -> MigrationReview raise DesignError
 pub fn Schema::sql_advice(Self, Plan, String, limits? : Limits) -> SqlAdvice raise DesignError
 pub fn Schema::synthesize_3nf(Self, limits? : Limits) -> Plan raise DesignError
@@ -258,15 +258,15 @@ pub fn Schema::to_json(Self) -> Json
 pub fn Schema::to_repr(Self) -> @debug.Repr
 pub fn Schema::to_text(Self) -> String
 pub fn Schema::validate_chase_witness(Self, ChaseResult, limits? : Limits) -> Bool raise DesignError
-pub fn Schema::verify_chase_trace(Self, Array[Array[Int]], ChaseResult, limits? : Limits) -> Bool raise DesignError
-pub fn Schema::verify_lossy_counterexample(Self, Array[Array[Int]], LossyWitness, limits? : Limits) -> Bool raise DesignError
+pub fn Schema::verify_chase_trace(Self, Array[Array[Int32]], ChaseResult, limits? : Limits) -> Bool raise DesignError
+pub fn Schema::verify_lossy_counterexample(Self, Array[Array[Int32]], LossyWitness, limits? : Limits) -> Bool raise DesignError
 pub fn Schema::verify_split_trace(Self, Plan, limits? : Limits) -> Bool raise DesignError
 
 pub(all) struct SplitStep {
-  input : Array[Int]
+  input : Array[Int32]
   dependency : FD
-  first : Array[Int]
-  second : Array[Int]
+  first : Array[Int32]
+  second : Array[Int32]
 } derive(Eq, @debug.Debug)
 pub fn SplitStep::equal(Self, Self) -> Bool
 pub fn SplitStep::not_equal(Self, Self) -> Bool
@@ -275,7 +275,7 @@ pub fn SplitStep::to_repr(Self) -> @debug.Repr
 pub(all) struct SqlAdvice {
   statements : Array[String]
   warnings : Array[String]
-  primary_keys : Array[Array[Int]]
+  primary_keys : Array[Array[Int32]]
 } derive(Eq, @debug.Debug)
 pub fn SqlAdvice::equal(Self, Self) -> Bool
 pub fn SqlAdvice::not_equal(Self, Self) -> Bool
@@ -289,12 +289,12 @@ pub fn Table::audit_dependencies(Self, Schema, limits? : Limits) -> DataAudit ra
 pub fn Table::audit_report(Self, Schema, limits? : Limits) -> String raise DesignError
 pub fn Table::column_names(Self) -> Array[String]
 pub fn Table::column_profiles(Self, limits? : Limits) -> Array[ColumnProfile] raise DesignError
-pub fn Table::columns(Self) -> Array[Int]
-pub fn Table::key_collisions(Self, Array[Int], limits? : Limits) -> Array[Collision] raise DesignError
+pub fn Table::columns(Self) -> Array[Int32]
+pub fn Table::key_collisions(Self, Array[Int32], limits? : Limits) -> Array[Collision] raise DesignError
 pub fn Table::natural_join(Self, Self, limits? : Limits) -> Self raise DesignError
-pub fn Table::project(Self, Array[Int], limits? : Limits) -> Self raise DesignError
-pub fn Table::reconstruct(Self, Schema, Array[Array[Int]], limits? : Limits) -> Reconstruction raise DesignError
-pub fn Table::row_count(Self) -> Int
+pub fn Table::project(Self, Array[Int32], limits? : Limits) -> Self raise DesignError
+pub fn Table::reconstruct(Self, Schema, Array[Array[Int32]], limits? : Limits) -> Reconstruction raise DesignError
+pub fn Table::row_count(Self) -> Int32
 pub fn Table::rows(Self) -> Array[Array[String]]
 pub fn Table::set_equal(Self, Self, limits? : Limits) -> Bool raise DesignError
 pub fn Table::to_csv(Self) -> String
@@ -311,17 +311,17 @@ pub fn TheoryDelta::not_equal(Self, Self) -> Bool
 pub fn TheoryDelta::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TupleViolation {
-  dependency_index : Int
-  first_row : Int
-  second_row : Int
-  differing_attributes : Array[Int]
+  dependency_index : Int32
+  first_row : Int32
+  second_row : Int32
+  differing_attributes : Array[Int32]
 } derive(Eq, @debug.Debug)
 pub fn TupleViolation::equal(Self, Self) -> Bool
 pub fn TupleViolation::not_equal(Self, Self) -> Bool
 pub fn TupleViolation::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Violation {
-  relation : Array[Int]
+  relation : Array[Int32]
   dependency : FD
   form : NormalForm
 } derive(Eq, @debug.Debug)
